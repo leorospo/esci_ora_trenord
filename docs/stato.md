@@ -1,22 +1,26 @@
 # Stato del progetto
 
-Ultimo aggiornamento: 2026-10-30
+Ultimo aggiornamento: 2026-10-31
 
 ## Fase corrente
-Pre-Fase 0. Overview e requisiti approvati dall'utente il 2026-10-30. Nessun codice ancora scritto.
+Pre-Fase 0. Fonte del tempo reale decisa (D-29). Nessun codice ancora scritto.
 
 ## Fatto
-- Discussione di requisiti e architettura completata (vedi `decisioni.md`, D-01…D-20).
+- Discussione di requisiti e architettura completata e approvata (vedi `decisioni.md`, D-01…D-20).
 - Documenti iniziali del repository scritti.
+- Design della Live Activity (schermata di blocco) fatto con Claude Design: versione C scelta, 156 pt. Modifiche registrate in D-21…D-28 e in `design.md`.
+- Verifica V-01 (2026-10-31): l'API real-time Trenord sta solo dentro E015. Letti policy Trenord, contratto di adesione e Linee guida App (Allegato 1). E015 richiede approvazione discrezionale di Trenord, un server "App Broker" con certificati e la verifica del TMB: troppo lungo per un progetto da chiudere in pochi giorni. L'utente si è registrato a E015 ma **non ha inviato la richiesta né firmato il contratto**. La bozza di richiesta resta in `docs/richiesta-e015.md` come riferimento.
+- Nessun feed real-time Trenord aperto trovato. Scelta ViaggiaTreno (API non ufficiale di Trenitalia) per uso personale, con i vincoli delle note legali (D-29, `requisiti.md`).
+- La pipeline del GTFS statico, l'app e la verifica di ViaggiaTreno si possono fare in parte senza Mac.
 
 ## Prossimi passi
-1. L'utente attiva Claude Pro (Claude Design e Claude Code condividono il limite d'uso: raggruppare le sessioni).
-2. Creare il repository GitHub pubblico e caricare questi documenti.
-3. Design della Live Activity con Claude Design (su Windows), registrando l'esito in `design.md`.
+**Prossima sessione (lunedì 2026-11-02): pipeline del GTFS statico (punto 2), con overview da approvare prima.** Le email di richiesta a Trenord (via TMB E015) e a Trenitalia sono state inviate dall'utente il 2026-11-01: in attesa di risposta. Valutate e scartate come alternative le documentazioni non ufficiali di ViaggiaTreno (Home Assistant, railway-opendata di Marco Aceti): usano lo stesso endpoint bloccato e risalgono al 2023 circa; utili solo come riferimento sul formato dei dati se arriva un permesso.
+
+1. Prova tecnica di ViaggiaTreno (V-08) fatta il 2026-10-31: accesso negato dalla protezione anti-bot (403). D-29 non realizzabile così com'è. Il ritardo è irrinunciabile per l'MVP (utente, 2026-11-01). Bozze delle richieste di permesso a Trenord (via TMB E015) e a Trenitalia in `docs/richieste-permesso.md`, da inviare a cura dell'utente; basta una risposta positiva.
+2. Pipeline del GTFS statico (GitHub Actions + Pages): overview da approvare prima.
+3. Aggiungere in `design.md` il link o l'export dei design.
 4. Quando il Mac è disponibile (Claude deve chiederlo): Fase 0 sul suo iPhone 16.
+5. Eventuale design della Dynamic Island (priorità bassa) e della card treno nell'app.
 
 ## Punti aperti
-Vedi "Da verificare" in `decisioni.md` (V-01…V-05).
-
-## Note per la prossima sessione
-- Con il Mac assente, il lavoro possibile ora è: design, pipeline dati (GitHub Actions), verifica dell'API real-time E015.
+Vedi "Da verificare" in `decisioni.md` (V-02…V-08). Contatto per i titolari dei dati deciso (D-30): User-Agent e README.

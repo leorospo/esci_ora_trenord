@@ -8,6 +8,8 @@ Priorità bassa salvo indicazione contraria.
 - Rifirma automatica dell'app ogni 7 giorni (AltStore o simili, da verificare con account gratuito).
 - Aggiornamento in background migliorato (da valutare con i dati della Fase 0).
 
+- Tempo reale ufficiale tramite E015 (API Trenord), solo se il progetto diventa pubblico o commerciale: richiede adesione, App Broker con certificati, verifica del TMB (vedi D-29 e `docs/richiesta-e015.md`).
+
 ## Idee a priorità bassa
 - Dynamic Island rifinita.
 - Widget per schermata di blocco o Home.

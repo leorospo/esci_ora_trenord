@@ -31,6 +31,7 @@ Il repository è l'unica fonte di verità. All'inizio di ogni sessione leggi, in
 - Senza push gli aggiornamenti in background non sono garantiti: si usa la posizione in background, con precisione minima, solo per tenere vivo il processo durante la finestra di monitoraggio.
 - Dispositivo di riferimento: iPhone 16, iOS 26.5.2.
 - Licenza dati: GTFS Trenord CC-BY 4.0; l'app deve riportare l'attribuzione.
+- Tempo reale da ViaggiaTreno (API non ufficiale, D-29): solo l'app sul telefono lo interroga; mai ripubblicare quei dati (pipeline, Pages, repository), niente storico, niente marchio ViaggiaTreno.
 
 ## Struttura prevista del repository
 ```

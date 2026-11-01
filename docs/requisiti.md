@@ -14,8 +14,8 @@ Vedere rapidamente e **senza alcun input** i prossimi treni utili per il proprio
 
 ## Dati
 - Orari: GTFS statico Trenord (open data Regione Lombardia, CC-BY 4.0, attribuzione obbligatoria). Validità attuale fino al 2026-12-12; serve ricaricare il feed al cambio orario.
-- Tempo reale: API E015 "GTFS Static e Real-time" di Trenord (ritardi effettivi alle fermate passate, ritardi previsti alle fermate future). Da verificare: registrazione/chiave, limiti di richieste, frequenza di aggiornamento.
-- La pipeline notturna riduce il GTFS statico a un file compatto pubblicato su GitHub Pages; l'app legge il file compatto e il feed real-time direttamente.
+- Tempo reale: API non ufficiale di ViaggiaTreno (Trenitalia), interrogata direttamente dall'app sul telefono (vedi D-29). Vincoli dalle note legali: solo uso personale e informativo; i dati non vengono ripubblicati né distribuiti (né dalla pipeline né su GitHub Pages né nel repository); nessuno storico; nessun uso del nome o del logo ViaggiaTreno nell'app; richieste poche e solo durante le finestre di monitoraggio. Se l'API non risponde o cambia, l'app passa agli orari programmati. Ogni richiesta porta l'intestazione `User-Agent: EsciOra/1.0 (app personale; contatto: morena.piste.0f@icloud.com)` (D-30).
+- La pipeline notturna riduce il GTFS statico a un file compatto pubblicato su GitHub Pages; l'app legge il file compatto e, direttamente, i ritardi da ViaggiaTreno.
 
 ## Concetti
 - **Viaggio**: solo andata o solo ritorno. Campi: stazione di partenza, stazione di arrivo, fascia oraria di partenza dalla stazione, tempo luogo di partenza→stazione, tempo stazione→destinazione, "Inizio monitoraggio" (monitoraggio a partire da X prima della fascia, default 90 minuti), giorni della settimana come le sveglie.
@@ -28,19 +28,21 @@ Vedere rapidamente e **senza alcun input** i prossimi treni utili per il proprio
 - Mostra i due treni utili successivi della fascia; una sola card se ne resta uno.
 - Informazione principale per ogni treno: **"Esci tra XX minuti"** = partenza prevista − tempo di percorrenza luogo→stazione − ora corrente. Usa la partenza programmata se mancano dati real time. Minuti arrotondati per difetto. Il conto alla rovescia scorre da solo.
 - Quando il valore è zero o passato e il treno non è partito: **"Esci ora"** in stile urgente.
+- Contenuto della card treno (dettaglio in `design.md`): numero del treno, durata del viaggio, partenza → arrivo previsti (con ritardo solo l'orario aggiornato), stato sempre visibile ("In orario", "+N min", "Senza real time"). "Esci tra" sta in una colonna a destra. La stazione di destinazione non è per card: la tratta compare una volta sola nel piede.
+- Altezza massima della Live Activity: 160 pt (versione scelta: 156 pt).
 - Dopo la partenza del treno: stato, ritardo, ETA stazione, ETA destinazione.
 - Un treno cancellato resta visibile con stato chiaro di cancellato/soppresso.
-- Treni senza dati real time: card con etichetta "Nessun dato real time per questo treno", visivamente distinta dalle card dei treni tracciati in tempo reale.
-- Feed real-time irraggiungibile: messaggio di errore globale a livello di app, non etichetta per ogni treno.
-- Indicatore di freschezza obbligatorio: "aggiornato alle HH:MM".
-- Tasto "Termina" sulla card.
-- Pulsante "sono salito su questo treno" (requisito funzionale; fase di realizzazione da decidere nella pianificazione della Fase 1).
+- Treni senza dati real time: etichetta breve "Senza real time" con icona, bordo tratteggiato e "~" sui minuti, visivamente distinta dalle card dei treni tracciati. La frase completa "Nessun dato real time per questo treno" sta nella card treno dentro l'app.
+- Feed real-time irraggiungibile: messaggio di errore globale, non etichetta per ogni treno. Nella Live Activity sostituisce la riga del piede: "⚠ Tempo reale non raggiungibile · agg. HH:MM".
+- Indicatore di freschezza obbligatorio: "Aggiornato alle HH:MM", nel piede a destra della tratta.
+- Nessun pulsante nella Live Activity: la chiusura è il gesto standard di iOS (vedi sotto).
+- "Sono salito su questo treno": requisito funzionale, ma sta nella card treno dentro l'app, non nella Live Activity. Fase di realizzazione da decidere nella pianificazione della Fase 1.
 - Nessun controllo sulla possibilità di portare la bici (in Lombardia tutti i treni la ammettono).
 
 ## Chiusura della Live Activity
 - Chiusura automatica 10 minuti dopo la partenza prevista dell'ultimo treno utile della fascia.
 - Dopo la conferma "sono salito": termina all'arrivo previsto + 5 minuti.
-- Chiusura manuale con "Termina".
+- Chiusura manuale: swipe standard di iOS sulla Live Activity. L'app osserva lo stato dell'attività e, se chiusa dall'utente, interrompe il monitoraggio e la posizione in background (da verificare in Fase 0, V-06).
 - Nota: la regola "10 minuti dopo l'ultimo treno" prevale sulla formulazione più sintetica "si chiude quando non restano treni" usata nella conversazione di approvazione; da riconfermare con l'utente se sembra in contrasto nell'uso reale.
 
 ## Avvio e calendarizzazione
@@ -50,11 +52,11 @@ Vedere rapidamente e **senza alcun input** i prossimi treni utili per il proprio
 - La strada principale va validata in Fase 0 (anticipo massimo di programmazione, numero di attività, avviso all'avvio, esecuzione dell'app e posizione in background all'avvio programmato). Se non regge, il ripiego diventa principale.
 
 ## Schermate dell'app
-- Home: nel viaggio corrente mostra tutti i treni precedenti e successivi (non solo i due della Live Activity) e permette di confermare la salita su ogni treno già partito.
+- Home: nel viaggio corrente mostra tutti i treni precedenti e successivi (non solo i due della Live Activity) e permette di confermare la salita su ogni treno già partito ("Sono salito" è nella card treno dell'app). La card dell'app mostra anche la frase completa per i treni senza dati real time.
 - Senza viaggio corrente l'app si apre direttamente sull'elenco dei viaggi.
 
 ## Fasi
 - **Fase 0 — spike con dati finti sul telefono**: programmazione iOS 26, posizione in background, durata dell'attività, batteria, rifirma ogni 7 giorni.
-- **Fase 1 — MVP**: un viaggio fisso, un verso, dati reali, fascia oraria, due treni utili, "Esci tra", stati della card, "Termina". Tempo di percorrenza come configurazione statica. Criterio di successo: in una settimana reale di pendolarismo l'ETA mostrato corrisponde a quello visto in stazione.
+- **Fase 1 — MVP**: un viaggio fisso, un verso, dati reali, fascia oraria, due treni utili, "Esci tra", stati della card. Tempo di percorrenza come configurazione statica. Criterio di successo: in una settimana reale di pendolarismo l'ETA mostrato corrisponde a quello visto in stazione.
 - **Fase 2 — configurazione**: più viaggi, giorni, fasce, tempi di percorrenza modificabili, schermate di configurazione.
 - **Fase 3 — rifiniture**: ETA stazione e destinazione.

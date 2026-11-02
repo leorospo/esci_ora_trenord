@@ -3,7 +3,7 @@
 Ultimo aggiornamento: 2026-11-02
 
 ## Fase corrente
-Pre-Fase 0. Tempo reale da ViaggiaTreno con intestazioni da browser (D-32, D-33). Pipeline del GTFS statico scritta e testata (D-38…D-40), su branch `claude/pipeline-gtfs`: da unire a `master` e attivare GitHub Pages. Nessun codice dell'app ancora scritto.
+Pre-Fase 0. Tempo reale da ViaggiaTreno con intestazioni da browser (D-32, D-33). Pipeline del GTFS statico attiva su `master` e GitHub Pages (D-38…D-40), primo giro riuscito il 2026-11-02. Nessun codice dell'app ancora scritto.
 
 ## Fatto
 - Discussione di requisiti e architettura completata e approvata (vedi `decisioni.md`, D-01…D-20).
@@ -16,8 +16,8 @@ Pre-Fase 0. Tempo reale da ViaggiaTreno con intestazioni da browser (D-32, D-33)
 - Prototipo "senza tempo reale" (2026-11-02, branch `claude/prototipo-senza-tempo-reale`): il tempo reale resta nell'MVP, con ripiego sugli orari programmati se non si riesce a collegarlo (D-31).
 
 ## Prossimi passi
-1. Pipeline: unire il branch a `master`, attivare Pages (Settings → Pages → Source: GitHub Actions), lanciare a mano il primo giro e verificare V-05. Prova sul feed vero del 2026-11-02: 102 corse, 14 KB.
-2. Rifare la prova di ViaggiaTreno (V-08) con intestazioni da browser, con e senza `From` (D-32); verificare anche il binario (V-09). Si fa senza Mac.
+1. Aprire https://leorospo.github.io/esci_ora_trenord/orari.json da browser per chiudere V-05.
+2. **In locale** (il cloud non permette http): completare la prova di ViaggiaTreno (V-08) con intestazioni da browser, con e senza `From` (D-32), e verificare il binario (V-09). Dal cloud: 301 verso http invece di 403. Si fa senza Mac.
 3. L'utente lavora sul design per capolinea e binario della versione C (156 pt, max 160).
 4. Aggiungere in `design.md` il link o l'export dei design.
 5. Quando il Mac è disponibile (Claude deve chiederlo): Fase 0 sul suo iPhone 16.

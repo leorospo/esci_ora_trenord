@@ -21,27 +21,29 @@ Vedere rapidamente e **senza alcun input** i prossimi treni utili per il proprio
 ## Concetti
 - **Viaggio**: solo andata o solo ritorno. Campi: stazione di partenza, stazione di arrivo, fascia oraria di partenza dalla stazione, tempo luogo di partenza→stazione, tempo stazione→destinazione, "Inizio monitoraggio" (monitoraggio a partire da X prima della fascia, default 90 minuti), giorni della settimana come le sveglie.
 - **Fascia oraria**: intervallo di partenza dalla stazione preimpostato nel viaggio.
-- **Treno utile**: partenza prevista (programmata più ritardo) non ancora passata E dentro la fascia. Un treno programmato prima della fascia ma in ritardo che rientra nella fascia è utile. Il tempo luogo→stazione NON entra nella selezione (l'app non sa se l'utente è già uscito).
+- **Treno utile**: treno dentro la fascia (partenza prevista = programmata più ritardo) e non ancora partito da più di 5 minuti dalla stazione dell'utente. Partenza effettiva se c'è il dato in tempo reale, altrimenti programmata (D-41). Un treno programmato prima della fascia ma in ritardo che rientra nella fascia è utile. Il tempo luogo→stazione NON entra nella selezione (l'app non sa se l'utente è già uscito).
 - **Viaggio corrente**: da "Inizio monitoraggio" fino alla chiusura della Live Activity.
 - **Finestra di monitoraggio**: periodo in cui l'app resta attiva in background (posizione a precisione minima) e aggiorna la card.
 
 ## Live Activity (schermata di blocco)
 - Mostra i due treni utili successivi della fascia; una sola card se ne resta uno.
 - Informazione principale per ogni treno: **"Esci tra XX minuti"** = partenza prevista − tempo di percorrenza luogo→stazione − ora corrente. Usa la partenza programmata se mancano dati real time. Minuti arrotondati per difetto. Il conto alla rovescia scorre da solo.
-- Quando il valore è zero o passato e il treno non è partito: **"Esci ora"** in stile urgente.
-- Contenuto della card treno (dettaglio in `design.md`): numero del treno, durata del viaggio, partenza → arrivo previsti (con ritardo solo l'orario aggiornato), capolinea del treno per riconoscerlo sul tabellone (D-36, impatto sul design da valutare), binario di partenza se disponibile dal tempo reale (D-37), stato sempre visibile ("In orario", "+N min", "Senza real time"). "Esci tra" sta in una colonna a destra. La stazione di destinazione non è per card: la tratta compare una volta sola nel piede.
-- Altezza massima della Live Activity: 160 pt (versione scelta: 156 pt).
-- Dopo la partenza del treno: stato, ritardo, ETA stazione, ETA destinazione.
-- Un treno cancellato resta visibile con stato chiaro di cancellato/soppresso.
-- Treni senza dati real time: etichetta breve "Senza real time" con icona, bordo tratteggiato e "~" sui minuti, visivamente distinta dalle card dei treni tracciati. La frase completa "Nessun dato real time per questo treno" sta nella card treno dentro l'app.
-- Feed real-time irraggiungibile: messaggio di errore globale, non etichetta per ogni treno. Nella Live Activity sostituisce la riga del piede: "⚠ Tempo reale non raggiungibile · agg. HH:MM".
+- Quando il valore è zero o passato: **"Esci ora"** in stile urgente, fino all'uscita della card (D-41).
+- Contenuto della card treno (dettaglio e riferimento visivo in `design.md`): numero del treno · capolinea (troncato, D-45) · durata del viaggio; partenza → arrivo previsti (con ritardo solo l'orario aggiornato); pill "+N min" solo con ritardo di almeno 2 minuti, nessuna pill se in orario (D-46); quadrato del binario: effettivo se dichiarato dal tempo reale, altrimenti programmato, con segnale di conferma e di cambio binario (D-48). "Esci tra" sta in una colonna a destra. La stazione di destinazione non è per card: la tratta compare una volta sola nel piede.
+- Bus sostitutivi segnalati come "BUS" con icona, anche al posto del binario (D-50).
+- Dimensioni della Live Activity: 361 pt di larghezza, altezza massima 160 pt (D-44).
+- Vista "in viaggio" dopo "Sono salito": stato, ritardo, ETA stazione, ETA destinazione (da progettare, Fase 3).
+- Un treno cancellato resta visibile con stato chiaro di cancellato/soppresso, fino al suo orario di partenza programmato (D-42).
+- La card di un treno esce 5 minuti dopo la sua partenza (D-41); fino ad allora resta in "Esci ora". Al suo posto entra il treno utile successivo.
+- Treni senza dati real time: etichetta breve "Senza real time" con icona al posto della pill, bordo tratteggiato, nessun binario, minuti senza tilde (D-47), visivamente distinta dalle card dei treni tracciati. La frase completa "Nessun dato real time per questo treno" sta nella card treno dentro l'app.
+- Feed real-time irraggiungibile: messaggio di errore globale, non etichetta per ogni treno. Nella Live Activity sostituisce la riga del piede: "⚠ Tempo reale non raggiungibile · agg. HH:MM" in arancione (D-49). L'etichetta "Senza real time" vale solo per i singoli treni non tracciati.
 - Indicatore di freschezza obbligatorio: "Aggiornato alle HH:MM", nel piede a destra della tratta.
 - Nessun pulsante nella Live Activity: la chiusura è il gesto standard di iOS (vedi sotto).
 - "Sono salito su questo treno": requisito funzionale, ma sta nella card treno dentro l'app, non nella Live Activity. Fase di realizzazione da decidere nella pianificazione della Fase 1.
 - Nessun controllo sulla possibilità di portare la bici (in Lombardia tutti i treni la ammettono).
 
 ## Chiusura della Live Activity
-- Chiusura automatica 10 minuti dopo la partenza prevista dell'ultimo treno utile della fascia.
+- Chiusura automatica 10 minuti dopo la partenza dell'ultimo treno utile della fascia: effettiva se c'è il tempo reale, altrimenti programmata (D-43).
 - Dopo la conferma "sono salito": termina all'arrivo previsto + 5 minuti.
 - Chiusura manuale: swipe standard di iOS sulla Live Activity. L'app osserva lo stato dell'attività e, se chiusa dall'utente, interrompe il monitoraggio e la posizione in background (da verificare in Fase 0, V-06).
 - Nota: la regola "10 minuti dopo l'ultimo treno" prevale sulla formulazione più sintetica "si chiude quando non restano treni" usata nella conversazione di approvazione; da riconfermare con l'utente se sembra in contrasto nell'uso reale.

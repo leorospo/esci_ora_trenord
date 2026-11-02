@@ -18,11 +18,13 @@ Pre-Fase 0. Tempo reale da ViaggiaTreno con intestazioni da browser (D-32, D-33)
 - Prova di ViaggiaTreno dal PC locale (2026-11-02): funziona con intestazioni da browser e `From`; binario disponibile; numeri dei treni uguali a `orari.json`. V-08 e V-09 chiuse. Campi e casi di soppressione in `docs/viaggiatreno.md`.
 - Nota per gli agenti: in modalità auto il controllo dei permessi di Claude Code blocca le richieste a ViaggiaTreno con intestazioni da browser, perché non conosce D-32. L'utente ha aggiunto una regola di permesso locale in `.claude/settings.local.json` (cartella esclusa da git). In un nuovo ambiente, per esempio il cloud o il Mac, va aggiunta di nuovo.
 
+- Regole della card dopo la partenza e della chiusura (D-41…D-43). Decisioni del grilling di design sulla Live Activity registrate (D-44…D-50) e `design.md` riscritto con il link al design (Iter. 4).
+
 ## Prossimi passi
 1. ~~V-05~~ chiusa il 2026-11-02: `orari.json` raggiungibile su https://leorospo.github.io/esci_ora_trenord/orari.json.
 2. ~~Prova di ViaggiaTreno (V-08, V-09)~~ chiusa il 2026-11-02.
-3. L'utente lavora sul design per capolinea e binario della versione C (156 pt, max 160).
-4. Aggiungere in `design.md` il link o l'export dei design.
+3. ~~Design per capolinea e binario~~ fatto (Iter. 4, D-44…D-50).
+4. ~~Link del design in `design.md`~~ fatto.
 5. Quando il Mac è disponibile (Claude deve chiederlo): Fase 0 sul suo iPhone 16.
 6. Eventuale design della Dynamic Island (priorità bassa) e della card treno nell'app.
 

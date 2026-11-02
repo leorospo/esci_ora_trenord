@@ -16,7 +16,9 @@ Pre-Fase 0. Tempo reale da ViaggiaTreno con intestazioni da browser (D-32, D-33)
 - Prototipo "senza tempo reale" (2026-11-02, branch `claude/prototipo-senza-tempo-reale`): il tempo reale resta nell'MVP, con ripiego sugli orari programmati se non si riesce a collegarlo (D-31).
 
 ## Prossimi passi
-1. Aprire https://leorospo.github.io/esci_ora_trenord/orari.json da browser per chiudere V-05.
+**Prossima sessione (in locale, sul PC Windows): prova di ViaggiaTreno, punto 2.** Fare `git pull` su `master` prima di iniziare.
+
+1. ~~V-05~~ chiusa il 2026-11-02: `orari.json` raggiungibile su https://leorospo.github.io/esci_ora_trenord/orari.json.
 2. **In locale** (il cloud non permette http): completare la prova di ViaggiaTreno (V-08) con intestazioni da browser, con e senza `From` (D-32), e verificare il binario (V-09). Dal cloud: 301 verso http invece di 403. Si fa senza Mac.
 3. L'utente lavora sul design per capolinea e binario della versione C (156 pt, max 160).
 4. Aggiungere in `design.md` il link o l'export dei design.

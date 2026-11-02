@@ -50,3 +50,8 @@ Se esiste un canale più adatto per questo tipo di richiesta, vi sarei grato se 
 Grazie per l'attenzione.
 
 Leonardo Mancori
+
+
+## Esiti
+- 2026-11-02, Trenitalia: risposta ricevuta, conservata dall'utente fuori dal repository. Decisione conseguente in D-32.
+- Trenord: nessuna risposta al 2026-11-02.

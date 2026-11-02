@@ -43,4 +43,7 @@ docs/
   design.md
   backlog.md
 ```
-Le cartelle di codice (app iOS) e della pipeline dati verranno aggiunte e descritte qui.
+- `pipeline/`: riduzione notturna del GTFS a `orari.json` (Python, vedi `pipeline/README.md`).
+- `.github/workflows/orari.yml`: esecuzione notturna e pubblicazione su GitHub Pages.
+
+La cartella dell'app iOS verrà aggiunta e descritta qui.

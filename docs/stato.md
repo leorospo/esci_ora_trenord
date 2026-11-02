@@ -1,6 +1,6 @@
 # Stato del progetto
 
-Ultimo aggiornamento: 2026-10-31
+Ultimo aggiornamento: 2026-11-02
 
 ## Fase corrente
 Pre-Fase 0. Fonte del tempo reale decisa (D-29). Nessun codice ancora scritto.
@@ -12,6 +12,7 @@ Pre-Fase 0. Fonte del tempo reale decisa (D-29). Nessun codice ancora scritto.
 - Verifica V-01 (2026-10-31): l'API real-time Trenord sta solo dentro E015. Letti policy Trenord, contratto di adesione e Linee guida App (Allegato 1). E015 richiede approvazione discrezionale di Trenord, un server "App Broker" con certificati e la verifica del TMB: troppo lungo per un progetto da chiudere in pochi giorni. L'utente si è registrato a E015 ma **non ha inviato la richiesta né firmato il contratto**. La bozza di richiesta resta in `docs/richiesta-e015.md` come riferimento.
 - Nessun feed real-time Trenord aperto trovato. Scelta ViaggiaTreno (API non ufficiale di Trenitalia) per uso personale, con i vincoli delle note legali (D-29, `requisiti.md`).
 - La pipeline del GTFS statico, l'app e la verifica di ViaggiaTreno si possono fare in parte senza Mac.
+- Prototipo "senza tempo reale" (2026-11-02, branch `claude/prototipo-senza-tempo-reale`): il tempo reale resta nell'MVP, con ripiego sugli orari programmati se non si riesce a collegarlo (D-31).
 
 ## Promemoria per l'utente
 - **Sul PC dove hai usato Claude Code in locale (sessioni del 2026-11-01 e precedenti)**: rendi disponibile in cloud almeno la chat principale, quella dei prossimi passi. Le sessioni locali non si vedono su claude.ai/code. Il modo più semplice: in quella chat chiedi a Claude di riassumere le decisioni ancora non registrate nei documenti di `docs/` e di committarle; oppure avviala con Remote Control (`claude remote-control`) per vederla dal web. Poi cancella questa nota.

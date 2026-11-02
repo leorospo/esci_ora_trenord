@@ -13,6 +13,9 @@ Pre-Fase 0. Fonte del tempo reale decisa (D-29). Nessun codice ancora scritto.
 - Nessun feed real-time Trenord aperto trovato. Scelta ViaggiaTreno (API non ufficiale di Trenitalia) per uso personale, con i vincoli delle note legali (D-29, `requisiti.md`).
 - La pipeline del GTFS statico, l'app e la verifica di ViaggiaTreno si possono fare in parte senza Mac.
 
+## Promemoria per l'utente
+- **Sul PC dove hai usato Claude Code in locale (sessioni del 2026-11-01 e precedenti)**: rendi disponibile in cloud almeno la chat principale, quella dei prossimi passi. Le sessioni locali non si vedono su claude.ai/code. Il modo più semplice: in quella chat chiedi a Claude di riassumere le decisioni ancora non registrate nei documenti di `docs/` e di committarle; oppure avviala con Remote Control (`claude remote-control`) per vederla dal web. Poi cancella questa nota.
+
 ## Prossimi passi
 **Prossima sessione (lunedì 2026-11-02): pipeline del GTFS statico (punto 2), con overview da approvare prima.** Le email di richiesta a Trenord (via TMB E015) e a Trenitalia sono state inviate dall'utente il 2026-11-01: in attesa di risposta. Valutate e scartate come alternative le documentazioni non ufficiali di ViaggiaTreno (Home Assistant, railway-opendata di Marco Aceti): usano lo stesso endpoint bloccato e risalgono al 2023 circa; utili solo come riferimento sul formato dei dati se arriva un permesso.
 

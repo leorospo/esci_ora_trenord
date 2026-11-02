@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototipo senza tempo reale</title>
+<style>
+:root{--bg:#f6f6f4;--card:#fff;--ink:#1a1a1a;--mute:#6b6b6b;--line:#e2e2de;--acc:#e8661c;--ok:#2f7d4f;--bad:#b3261e;--soft:#fff4ec}
+@media (prefers-color-scheme:dark){:root{--bg:#141414;--card:#1f1f1f;--ink:#f0f0f0;--mute:#9a9a9a;--line:#333;--soft:#3a2416}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,system-ui,Segoe UI,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:22px;margin:0 0 6px}h2{font-size:16px;margin:28px 0 10px}
+.tag{display:inline-block;background:var(--acc);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;letter-spacing:.04em}
+.intro{color:var(--mute);max-width:760px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.cols{grid-template-columns:1fr}}
+.now{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.la{background:#000;color:#fff;border-radius:22px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.la h3{margin:0 0 4px;font-size:13px;color:#bbb;font-weight:600}
+.t{display:flex;border-radius:14px;background:#2a2a2a;padding:10px 12px;gap:10px;align-items:center}
+.t.static{border:2px dashed #777;background:#222}
+.t.urgent{background:var(--acc)}
+.t.cancel .times{text-decoration:line-through;opacity:.6}
+.t .l{flex:1;min-width:0}.t .r{width:30%;text-align:right}
+.t .num{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#ccc}
+.t.urgent .num{color:#fff}
+.times{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.st{font-size:12px;color:#ccc}.t.urgent .st{color:#fff}
+.exit small{display:block;font-size:11px;color:#bbb}.t.urgent .exit small{color:#fff}
+.exit b{font-family:ui-monospace,Menlo,monospace;font-size:26px}
+.foot{font-size:11px;color:#aaa;display:flex;justify-content:space-between}
+.foot.err{color:#ffb4a0}
+.empty{color:#aaa;font-size:13px;padding:8px}
+.outcome{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bg);font-size:14px}
+.outcome.bad{background:var(--soft);border-left:4px solid var(--acc)}
+.outcome.good{border-left:4px solid var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}th{color:var(--mute);font-weight:600;font-size:12px}
+button{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 10px;cursor:pointer}
+button:hover{border-color:var(--acc)}
+button.primary{background:var(--acc);color:#fff;border-color:var(--acc)}
+button:disabled{opacity:.35;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.tabs button.on{background:var(--ink);color:var(--bg)}
+.steps{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.steps button{text-align:left}
+.steps button.done{opacity:.5;text-decoration:line-through}
+.changed{color:var(--acc);font-weight:600;font-size:13px;min-height:20px}
+.warn{color:var(--bad);font-weight:600}
+ul.diff{margin:6px 0;padding-left:18px}
+</style>
+</head>
+<body>
+<main>
+<span class="tag">PROTOTIPO · USA E GETTA</span>
+<h1>Esci ora senza tempo reale?</h1>
+<p class="intro"><b>Domanda:</b> se l'MVP usa solo gli orari programmati (GTFS statico) e niente ritardi, la Live Activity resta utile? E dove ti porta fuori strada? A sinistra vedi la Live Activity <b>solo con gli orari programmati</b>, a destra la stessa <b>con il tempo reale</b>. Sotto ciascuna, cosa succede davvero se segui il suo consiglio. Tu controlli la "realtà": ritardi e soppressioni che l'app senza tempo reale non può conoscere.<br>
+Viaggio di esempio: Monza → Cernusco Merate (S8), fascia di partenza <b>07:30–08:45</b>, 10 minuti da casa alla stazione, 23 minuti di viaggio. Gli orari dei treni sono inventati.</p>
+
+<h2>Scenari guidati</h2>
+<div class="panel">
+  <div class="tabs" id="tabs"></div>
+  <div id="scDesc"></div>
+  <div class="steps" id="steps"></div>
+</div>
+
+<h2>Situazione attuale</h2>
+<div class="row" style="margin-bottom:10px"><span class="now" id="now"></span><span class="changed" id="changed"></span></div>
+<div class="cols">
+  <div class="panel"><div id="laStatic"></div><div id="outStatic"></div></div>
+  <div class="panel"><div id="laRt"></div><div id="outRt"></div></div>
+</div>
+
+<h2>Gioco libero</h2>
+<div class="panel">
+  <div class="row" style="margin-bottom:10px">
+    <b>Ora:</b>
+    <button data-a="time" data-v="-10">−10 min</button><button data-a="time" data-v="-1">−1 min</button>
+    <button data-a="time" data-v="1">+1 min</button><button data-a="time" data-v="5">+5 min</button><button data-a="time" data-v="10">+10 min</button>
+    <span style="width:16px"></span>
+    <button data-a="feed">Tempo reale: guasta / ripristina</button>
+    <button data-a="reset">Ricomincia</button>
+  </div>
+  <table><thead><tr><th>Treno</th><th>Programmato</th><th>Ritardo reale</th><th>Parte davvero</th><th>Nella fascia?</th><th>Cambia la realtà</th></tr></thead><tbody id="trains"></tbody></table>
+</div>
+
+<h2>Cosa cambierebbe nel design senza tempo reale</h2>
+<div class="panel">
+  <b>Stati che spariscono:</b>
+  <ul class="diff"><li>"In orario" e "+N min": non c'è niente da dire; lo stato sarebbe sempre "Programmato".</li><li>"Soppresso": l'app non lo sa, mostra il treno come se partisse.</li><li>Errore globale "Tempo reale non raggiungibile".</li><li>"Aggiornato alle HH:MM" perde senso (il dato non cambia mai).</li><li>Il treno in ritardo che rientra nella fascia (D-11) non viene mai mostrato.</li></ul>
+  <b>Cosa resta:</b>
+  <ul class="diff"><li>"Esci tra XX'" ed "Esci ora", calcolati sull'orario programmato.</li><li>Il bordo tratteggiato "Senza real time" diventerebbe lo stile di tutte le card, quindi andrebbe ripensato (o tolto).</li><li>Niente rete durante il viaggio: in teoria non servirebbe tenere vivo il processo in background solo per i ritardi, ma il conto alla rovescia e il cambio di treno vanno comunque aggiornati (rimane da verificare in Fase 0).</li></ul>
+</div>
+</main>
+
+<script>
+// ===== Modulo logico puro (sollevabile nel codice vero) =====
+const Logic = (() => {
+  const CONFIG = { from: "Monza", to: "Cernusco Merate", bandStart: 7*60+30, bandEnd: 8*60+45, walk: 10, duration: 23 };
+  const initial = () => ({
+    now: 7*60+20, feedUp: true,
+    trains: [
+      { id: "S8 98096", sched: 7*60+2,  delay: 0, cancelled: false },
+      { id: "S8 98098", sched: 7*60+32, delay: 0, cancelled: false },
+      { id: "S8 98102", sched: 8*60+2,  delay: 0, cancelled: false },
+      { id: "S8 98104", sched: 8*60+32, delay: 0, cancelled: false },
+      { id: "S8 98106", sched: 9*60+2,  delay: 0, cancelled: false },
+    ],
+  });
+  const actualDep = t => t.sched + t.delay;
+  const inBand = m => m >= CONFIG.bandStart && m <= CONFIG.bandEnd;
+
+  function reduce(s, a) {
+    const trains = s.trains.map(t => ({ ...t }));
+    const find = id => trains.find(t => t.id === id);
+    switch (a.type) {
+      case "reset": return initial();
+      case "setNow": return { ...s, now: a.value };
+      case "addTime": return { ...s, now: s.now + a.value };
+      case "setDelay": find(a.id).delay = a.value; return { ...s, trains };
+      case "addDelay": find(a.id).delay = Math.max(0, find(a.id).delay + a.value); return { ...s, trains };
+      case "toggleCancel": find(a.id).cancelled = !find(a.id).cancelled; return { ...s, trains };
+      case "toggleFeed": return { ...s, feedUp: !s.feedUp };
+      default: return s;
+    }
+  }
+
+  // Cosa sa l'app. mode: "static" | "realtime"
+  function liveActivity(s, mode) {
+    const rt = mode === "realtime" && s.feedUp;
+    const cards = s.trains
+      .map(t => ({ t, dep: rt ? actualDep(t) : t.sched }))
+      .filter(c => c.dep >= s.now && inBand(c.dep))
+      .sort((a, b) => a.dep - b.dep)
+      .slice(0, 2)
+      .map(({ t, dep }) => {
+        const cancelled = rt && t.cancelled;
+        const exitIn = Math.floor(dep - CONFIG.walk - s.now);
+        return { id: t.id, dep, arr: dep + CONFIG.duration, exitIn, urgent: exitIn <= 0 && !cancelled, cancelled,
+          status: !rt ? "Programmato" : cancelled ? "Soppresso" : t.delay ? `+${t.delay} min` : "In orario", tracked: rt };
+      });
+    return { cards, error: mode === "realtime" && !s.feedUp, updatedAt: s.now };
+  }
+
+  // Cosa succede davvero se segui il primo consiglio non soppresso
+  function outcome(s, la) {
+    const pick = la.cards.find(c => !c.cancelled);
+    if (!pick) return { kind: "none", text: "Nessun treno consigliato." };
+    const leave = Math.max(s.now, pick.dep - CONFIG.walk);
+    const atStation = leave + CONFIG.walk;
+    const caught = s.trains.filter(t => !t.cancelled && actualDep(t) >= atStation).sort((a, b) => actualDep(a) - actualDep(b))[0];
+    const target = s.trains.find(t => t.id === pick.id);
+    const base = { leave, atStation, target: pick.id };
+    if (!caught) return { ...base, kind: "bad", text: "Nessun treno disponibile." };
+    const wait = actualDep(caught) - atStation;
+    if (caught.id === pick.id) return { ...base, kind: wait > 3 ? "bad" : "good", caught: caught.id, wait,
+      text: wait > 3 ? `Prendi il ${caught.id}, ma aspetti ${wait} min in stazione: potevi uscire più tardi.` : `Prendi il ${caught.id}, attesa ${wait} min. Perfetto.` };
+    if (target.cancelled) return { ...base, kind: "bad", caught: caught.id, wait, text: `Il ${pick.id} è soppresso: lo scopri in stazione. Prendi il ${caught.id} dopo ${wait} min di attesa.` };
+    return { ...base, kind: "bad", caught: caught.id, wait, text: `Prendi il ${caught.id} (non quello consigliato), attesa ${wait} min.` };
+  }
+
+  // Treni che potresti ancora prendere davvero, ma l'app non mostra
+  function hidden(s, la) {
+    const shown = new Set(la.cards.map(c => c.id));
+    return s.trains.filter(t => !t.cancelled && !shown.has(t.id) && actualDep(t) >= s.now + CONFIG.walk && inBand(actualDep(t)))
+      .filter(t => la.cards.length < 2 || actualDep(t) < Math.max(...la.cards.map(c => c.dep)));
+  }
+  return { CONFIG, initial, reduce, liveActivity, outcome, hidden, actualDep, inBand };
+})();
+
+// ===== Pagina (usa e getta) =====
+const hm = m => `${String(Math.floor(m/60)).padStart(2,"0")}:${String(((m%60)+60)%60).padStart(2,"0")}`;
+let state = Logic.initial(), lastMsg = "";
+function dispatch(a, msg) { state = Logic.reduce(state, a); lastMsg = msg || ""; render(); }
+
+function laHtml(title, la) {
+  const C = Logic.CONFIG;
+  const cards = la.cards.length ? la.cards.map(c => `
+    <div class="t ${c.tracked ? "" : "static"} ${c.urgent ? "urgent" : ""} ${c.cancelled ? "cancel" : ""}">
+      <div class="l"><div class="num">${c.id} · ${C.duration} min</div><div class="times">${hm(c.dep)} → ${hm(c.arr)}</div><div class="st">${c.status}</div></div>
+      <div class="r exit">${c.cancelled ? "<b>×</b><small>Soppresso</small>" : c.urgent ? "<b style='font-size:18px'>Esci ora</b>" : `<small>Esci tra</small><b>${c.tracked ? "" : "~"}${c.exitIn}'</b>`}</div>
+    </div>`).join("") : `<div class="empty">Nessun treno utile nella fascia.</div>`;
+  const foot = la.error ? `<div class="foot err">⚠ Tempo reale non raggiungibile · uso gli orari programmati</div>`
+    : `<div class="foot"><span>${C.from} → ${C.to}</span><span>${title.startsWith("Solo") ? "" : "Aggiornato alle " + hm(la.updatedAt)}</span></div>`;
+  return `<div class="la"><h3>${title}</h3>${cards}${foot}</div>`;
+}
+function outHtml(o, hid) {
+  let h = `<div class="outcome ${o.kind}"><b>Se esci seguendo il primo treno consigliato:</b> ${o.leave != null ? `esci alle ${hm(o.leave)}, sei in stazione alle ${hm(o.atStation)}. ` : ""}${o.text}</div>`;
+  if (hid.length) h += `<div class="outcome bad"><span class="warn">Non mostrato:</span> ${hid.map(t => `${t.id} (parte davvero alle ${hm(Logic.actualDep(t))})`).join(", ")}: lo potresti ancora prendere.</div>`;
+  return h;
+}
+function render() {
+  document.getElementById("now").textContent = "Ora: " + hm(state.now);
+  document.getElementById("changed").textContent = lastMsg;
+  const ls = Logic.liveActivity(state, "static"), lr = Logic.liveActivity(state, "realtime");
+  document.getElementById("laStatic").innerHTML = laHtml("Solo orari programmati", ls);
+  document.getElementById("laRt").innerHTML = laHtml("Con tempo reale" + (state.feedUp ? "" : " (guasto)"), lr);
+  document.getElementById("outStatic").innerHTML = outHtml(Logic.outcome(state, ls), Logic.hidden(state, ls));
+  document.getElementById("outRt").innerHTML = outHtml(Logic.outcome(state, lr), Logic.hidden(state, lr));
+  document.getElementById("trains").innerHTML = state.trains.map(t => `<tr>
+    <td>${t.id}</td><td>${hm(t.sched)}</td><td>${t.cancelled ? "<span class='warn'>soppresso</span>" : t.delay ? "+" + t.delay + " min" : "—"}</td>
+    <td>${t.cancelled ? "—" : hm(Logic.actualDep(t))}</td><td>${Logic.inBand(Logic.actualDep(t)) ? "sì" : "no"}</td>
+    <td class="row"><button data-t="${t.id}" data-d="5">+5 min</button><button data-t="${t.id}" data-d="-5">−5 min</button><button data-t="${t.id}" data-c="1">${t.cancelled ? "Ripristina" : "Sopprimi"}</button></td></tr>`).join("");
+}
+document.body.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.a === "time") dispatch({ type: "addTime", value: +b.dataset.v }, `Ora ${+b.dataset.v > 0 ? "+" : ""}${b.dataset.v} min`);
+  if (b.dataset.a === "feed") dispatch({ type: "toggleFeed" }, state.feedUp ? "Tempo reale guasto" : "Tempo reale ripristinato");
+  if (b.dataset.a === "reset") dispatch({ type: "reset" }, "Ricominciato");
+  if (b.dataset.d) dispatch({ type: "addDelay", id: b.dataset.t, value: +b.dataset.d }, `Ritardo ${b.dataset.t} ${b.dataset.d > 0 ? "+" : ""}${b.dataset.d} min`);
+  if (b.dataset.c) dispatch({ type: "toggleCancel", id: b.dataset.t }, `${b.dataset.t}: soppressione cambiata`);
+});
+
+// ===== Scenari =====
+const T = (h, m) => h*60+m;
+const S = [
+  { name: "1 · Giornata normale", desc: "Nessun ritardo. Le due Live Activity dovrebbero essere identiche: è il caso in cui il tempo reale non aggiunge nulla.",
+    steps: [["Sono le 07:40", {type:"setNow",value:T(7,40)}], ["Passano 7 minuti (07:47)", {type:"setNow",value:T(7,47)}], ["Sono le 07:52: si esce", {type:"setNow",value:T(7,52)}]] },
+  { name: "2 · Ritardo di 8 minuti", desc: "Il 98102 delle 08:02 parte con 8 minuti di ritardo. Senza tempo reale corri per niente e aspetti in banchina; con il tempo reale esci più tardi.",
+    steps: [["Sono le 07:40", {type:"setNow",value:T(7,40)}], ["Il 98102 accumula 8 min di ritardo", {type:"setDelay",id:"S8 98102",value:8}], ["Sono le 07:52: guarda chi dice 'Esci ora'", {type:"setNow",value:T(7,52)}]] },
+  { name: "3 · Treno soppresso", desc: "Il 98102 viene soppresso. Senza tempo reale lo scopri solo in stazione e aspetti mezz'ora.",
+    steps: [["Sono le 07:45", {type:"setNow",value:T(7,45)}], ["Il 98102 viene soppresso", {type:"toggleCancel",id:"S8 98102"}], ["Sono le 07:52", {type:"setNow",value:T(7,52)}]] },
+  { name: "4 · Rientra nella fascia", desc: "Il 98096 delle 07:02 (prima della fascia) parte con 35 minuti di ritardo, alle 07:37: per D-11 è un treno utile. Senza tempo reale non compare mai.",
+    steps: [["Sono le 07:20", {type:"setNow",value:T(7,20)}], ["Il 98096 accumula 35 min di ritardo", {type:"setDelay",id:"S8 98096",value:35}], ["Sono le 07:15", {type:"setNow",value:T(7,15)}]] },
+  { name: "5 · Ritardo grande", desc: "Il 98098 delle 07:32 parte con 25 minuti di ritardo (07:57), prima del 98102. Senza tempo reale pensi di averlo perso.",
+    steps: [["Sono le 07:15", {type:"setNow",value:T(7,15)}], ["Il 98098 accumula 25 min di ritardo", {type:"setDelay",id:"S8 98098",value:25}], ["Sono le 07:35: l'app senza tempo reale lo ha già tolto", {type:"setNow",value:T(7,35)}], ["Sono le 07:45", {type:"setNow",value:T(7,45)}]] },
+  { name: "6 · Tempo reale guasto", desc: "Il servizio del tempo reale non risponde (il caso ViaggiaTreno con il 403). Il ripiego automatico rende le due Live Activity uguali: l'MVP senza tempo reale è di fatto questo stato, sempre.",
+    steps: [["Sono le 07:40", {type:"setNow",value:T(7,40)}], ["Il 98102 accumula 6 min di ritardo", {type:"setDelay",id:"S8 98102",value:6}], ["Il tempo reale si guasta", {type:"toggleFeed"}]] },
+];
+let cur = 0, idx = 0;
+function renderScenario() {
+  document.getElementById("tabs").innerHTML = S.map((s, i) => `<button class="${i===cur?"on":""}" data-s="${i}">${s.name}</button>`).join("");
+  document.getElementById("scDesc").innerHTML = `<p style="margin:0">${S[cur].desc}</p>`;
+  document.getElementById("steps").innerHTML = S[cur].steps.map((st, i) =>
+    `<button class="${i<idx?"done":i===idx?"primary":""}" data-step="${i}" ${i!==idx?"disabled":""}>${i+1}. ${st[0]}</button>`).join("");
+}
+document.getElementById("tabs").addEventListener("click", e => { const b = e.target.closest("[data-s]"); if (!b) return;
+  cur = +b.dataset.s; idx = 0; dispatch({ type: "reset" }, "Scenario: " + S[cur].name); renderScenario(); });
+document.getElementById("steps").addEventListener("click", e => { const b = e.target.closest("[data-step]"); if (!b) return;
+  const st = S[cur].steps[idx]; dispatch(st[1], st[0]); idx++; renderScenario(); });
+renderScenario(); render();
+</script>
+</body>
+</html>

@@ -42,6 +42,7 @@ docs/
   decisioni.md
   design.md
   backlog.md
+  viaggiatreno.md
 ```
 - `pipeline/`: riduzione notturna del GTFS a `orari.json` (Python, vedi `pipeline/README.md`).
 - `.github/workflows/orari.yml`: esecuzione notturna e pubblicazione su GitHub Pages.

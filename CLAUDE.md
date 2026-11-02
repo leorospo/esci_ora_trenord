@@ -47,4 +47,4 @@ docs/
 - `pipeline/`: riduzione notturna del GTFS a `orari.json` (Python, vedi `pipeline/README.md`).
 - `.github/workflows/orari.yml`: esecuzione notturna e pubblicazione su GitHub Pages.
 
-La cartella dell'app iOS verrà aggiunta e descritta qui.
+- `app/`: app iOS e estensione della Live Activity (SwiftUI). Progetto descritto in `app/project.yml`, generato sul Mac con XcodeGen (D-51); istruzioni e prove della Fase 0 in `app/README.md`.

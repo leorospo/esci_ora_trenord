@@ -1,0 +1,53 @@
+# XcodeGen spec: `xcodegen generate` creates EsciOra.xcodeproj (see app/README.md).
+name: EsciOra
+options:
+  developmentLanguage: it
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    TARGETED_DEVICE_FAMILY: "1"
+targets:
+  EsciOra:
+    type: application
+    platform: iOS
+    sources:
+      - App
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.leorospo.esciora
+    info:
+      path: Support/App-Info.plist
+      properties:
+        CFBundleDisplayName: Esci ora
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSSupportsLiveActivities: true
+        UIBackgroundModes:
+          - location
+        NSLocationWhenInUseUsageDescription: La posizione serve solo a tenere attiva l'app durante il monitoraggio dei treni. Non viene salvata.
+        NSLocationAlwaysAndWhenInUseUsageDescription: La posizione serve solo a tenere attiva l'app in background durante il monitoraggio dei treni. Non viene salvata.
+    dependencies:
+      - target: EsciOraWidget
+  EsciOraWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Widget
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.leorospo.esciora.widget
+    info:
+      path: Support/Widget-Info.plist
+      properties:
+        CFBundleDisplayName: Esci ora
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension

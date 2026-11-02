@@ -3,7 +3,7 @@
 Ultimo aggiornamento: 2026-11-02
 
 ## Fase corrente
-Pre-Fase 0. Tempo reale da ViaggiaTreno con intestazioni da browser (D-32, D-33), verificato dal PC locale il 2026-11-02. Pipeline del GTFS statico attiva su `master` e GitHub Pages (D-38…D-40), primo giro riuscito il 2026-11-02. Nessun codice dell'app ancora scritto.
+Fase 0 (codice dello spike scritto, in attesa del Mac). Tempo reale da ViaggiaTreno con intestazioni da browser (D-32, D-33), verificato dal PC locale il 2026-11-02. Pipeline del GTFS statico attiva su `master` e GitHub Pages (D-38…D-40), primo giro riuscito il 2026-11-02. Codice della Fase 0 in `app/`, non ancora compilato.
 
 ## Fatto
 - Discussione di requisiti e architettura completata e approvata (vedi `decisioni.md`, D-01…D-20).
@@ -20,12 +20,15 @@ Pre-Fase 0. Tempo reale da ViaggiaTreno con intestazioni da browser (D-32, D-33)
 
 - Regole della card dopo la partenza e della chiusura (D-41…D-43). Decisioni del grilling di design sulla Live Activity registrate (D-44…D-50) e `design.md` riscritto con il link al design (Iter. 4).
 
+- Verifiche su documentazione Apple (2026-11-02): V-07 chiusa (371 × 84–160 pt su iPhone 16; differenza con i 361 pt del design da chiarire); V-02, V-03, V-04, V-06 con esito parziale, il resto va provato sul telefono in Fase 0. Novità: un'azione per Comandi può avviare la Live Activity senza aprire l'app.
+
 ## Prossimi passi
 1. ~~V-05~~ chiusa il 2026-11-02: `orari.json` raggiungibile su https://leorospo.github.io/esci_ora_trenord/orari.json.
 2. ~~Prova di ViaggiaTreno (V-08, V-09)~~ chiusa il 2026-11-02.
 3. ~~Design per capolinea e binario~~ fatto (Iter. 4, D-44…D-50).
 4. ~~Link del design in `design.md`~~ fatto.
-5. Quando il Mac è disponibile (Claude deve chiederlo): Fase 0 sul suo iPhone 16.
+5. Overview della Fase 0 approvata il 2026-11-02. Codice dello spike scritto in `app/` (D-51), non ancora compilato. Quando il Mac è disponibile (Claude deve chiederlo; al 2026-11-02 non lo è): generare il progetto, correggere gli errori di compilazione, installare sull'iPhone 16 e fare le prove descritte in `app/README.md`.
+5a. Chiarire nella chat di design la larghezza: 361 pt nel design, 371 pt secondo Apple (V-07).
 6. Eventuale design della Dynamic Island (priorità bassa) e della card treno nell'app.
 
 ## Punti aperti

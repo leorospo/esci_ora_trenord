@@ -1,3 +1,5 @@
 site/
 __pycache__/
 .claude/
+app/*.xcodeproj/
+app/Support/
